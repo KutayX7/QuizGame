@@ -25,14 +25,16 @@ int main()
     if (input == "")
     {
         cout << "\n Time's up! You're a failure!";
+        cout << "\n The correct answer was " << q1.correct_option + 1 << "\n";
     }
-    else if (input == q1.options[q1.correct_option])
+    else if (q1.check(input))
     {
         cout << "\n Correct!";
     }
     else
     {
         cout << "\n Incorrect! You're a menace to the society!";
+        cout << "\n The correct answer was " << q1.correct_option + 1 << "\n";
     }
     return 0;
 }
