@@ -38,3 +38,39 @@ void Question::printq()
     print_animated(" 4) " + options[3] + "\n", 0.5);
     delete[] words;
 }
+
+bool Question::check(int answer)
+{
+    if ((answer - 1) == correct_option)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Question::check(std::string answer)
+{
+    std::string expected_answer;
+    switch (correct_option)
+    {
+    case 0:
+        expected_answer = "1";
+        break;
+    case 1:
+        expected_answer = "2";
+        break;
+    case 2:
+        expected_answer = "3";
+        break;
+    case 3:
+        expected_answer = "4";
+        break;
+    default:
+        break;
+    }
+    if (answer == expected_answer)
+    {
+        return true;
+    }
+    return false;
+}
