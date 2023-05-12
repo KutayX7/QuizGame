@@ -18,5 +18,4 @@ void print_animated(std::string text, float seconds)
         std::cout << text[i]; // Print the char.
         std::this_thread::sleep_for(std::chrono::milliseconds(waitTime)); // Wait
     }
-    std::cout << "\n"; // End line
 }
