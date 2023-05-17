@@ -1,0 +1,21 @@
+#include <iostream>
+
+int main() {
+    int correctanswer = 4;
+    std::cout << "Please enter your answer:\n";
+    std::cout << "1.  Option\n";
+    std::cout << "2.  Option\n";
+    std::cout << "3.  Option\n";
+    std::cout << "4.  Option\n";
+
+    int userresponse;
+    std::cin >> userresponse;
+
+    if (userresponse == correctanswer) {
+        std::cout << "correct! congratulations!\n";
+    } else {
+        std::cout << "incorrect ! correct: " << correctanswer << "\n";
+    }
+
+    return 0;
+}
