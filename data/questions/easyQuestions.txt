@@ -1,10 +1,11 @@
 // This is a comment
+
 // Comments and empty lines are ignored
 
 // Questions are defined in 8 lines
 // 1st line : The question.
 // 2nd, 3rd, 4th, 5th lines : choices
-// 6th line : index of the correct answer (starts at 1 for huuman readiblity)
+// 6th line : index of the correct answer (starts at 1)
 // 7th line : **description** for the correct asnwer
 // 8th line : empty line, allows better visibility for humans
 
@@ -26,4 +27,3 @@ How many sides does a hexagon have?
 8
 2
 A hexagon has 6 sides
-
