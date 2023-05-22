@@ -115,7 +115,7 @@ Lasagna
 Burger
 Sandwich
 2
-Garfield, the popular cartoon cat, is known for his love of lasagna.
+Garfield, the popular cartoon cat, is known for his love of lasagna
 
 Who famously said “Veni, vidi, vici”?
 Winston Churchill
@@ -131,7 +131,7 @@ WWI
 WWII
 War of Roses
 3
-The movie 'Schindler's List' is set during World War II, specifically depicting the Holocaust.
+The movie 'Schindler's List' is set during World War II, specifically depicting the Holocaust
 
 What is the currency in Poland?
 Polish Pounds
@@ -163,7 +163,7 @@ Naples
 Venice
 Milano
 3
-Venice is well-known for its intricate system of canals, making it a unique and picturesque city.
+Venice is well-known for its intricate system of canals, making it a unique and picturesque city
 
 How many rings are on the Olympic flag?
 None
