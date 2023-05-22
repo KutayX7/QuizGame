@@ -98,16 +98,18 @@ void clear_screen(int width, int height)
 
 void enter_to_continue()
 {
-    std::cout << "Press ENTER to continue...";
-    std::cout.flush();
     if (isWaitingForInput) // Check for race conditions
     {
+        std::cout << " Please type \"\033[1;33mcontinue\033[0m\" to continue...\n";
+        std::cout.flush();
         while (isWaitingForInput)
         {
             std::cout.flush();
         }
         return;
     }
+    std::cout << "Press ENTER to continue...";
+    std::cout.flush();
     isWaitingForInput = true;
     std::cin.ignore();
     isWaitingForInput = false;
