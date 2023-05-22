@@ -28,3 +28,148 @@ How many sides does a hexagon have?
 8
 2
 A hexagon has 6 sides
+
+Which country is the footballer Cristiano Ronaldo from?
+Spain
+Brazil
+Uruguay
+Portugal
+4
+Cristiano Ronaldo is from Portugal
+
+Which famous inventor invented the telephone?
+Thomas Edison
+Benjamin Franklin
+Alexander Graham Bell
+Nikola Tesla
+3
+Alexander Graham Bell invented the telephone
+
+What is the largest continent in size?
+Asia
+Africa
+Europe
+North America
+1
+Asia is the largest continent in the earth
+
+Apart from water, what is the most popular drink in the world?
+Tea
+Coffee
+Beer
+Orange Juice
+1
+Tea is most popular drink apart from water
+
+Which one of the following companies has a mermaid in its logo?
+Twitter
+HSBC
+Target
+Starbucks
+4
+Starbucks has a mermaid in its logo
+
+What is Marshall’s job in How I met your mother?
+Architect
+Lawyer
+Teacher
+Journalist
+2
+Marshall is a lawyer
+
+What does NASA stand for?
+National Aeronautics and Space Administration
+Nautical And Space Association
+National Aeronautics and Space Association
+New Aeronautics and Spacial Administration
+1
+Long form of NASA is National Aeronautics and Space Administration
+
+What colour is the “m” from the McDonald’s logo?
+Blue
+Red
+Yellow
+Black
+3
+"M" letter is yellow
+
+How many elements are there on the periodic table?
+58
+78
+98
+118
+4
+There are 118 elements are on the periodic table
+
+Which chemical element has Ag as a symbol?
+Gold
+Silver
+Iron
+Carbon
+2
+The chemical element with the symbol "Ag" is silver
+
+What’s Garfield’s favourite food?
+Pizza
+Lasagna
+Burger
+Sandwich
+2
+Garfield, the popular cartoon cat, is known for his love of lasagna
+
+Who famously said “Veni, vidi, vici”?
+Winston Churchill
+Charles de Gaulle
+Julius Caesar
+Alexander the Great
+3
+he phrase "Veni, vidi, vici" is attributed to Julius Caesar, meaning "I came, I saw, I conquered."
+
+During which historical period is the movie ‘Schindler’s List’ set?
+Vietnam War
+WWI
+WWII
+War of Roses
+3
+The movie 'Schindler's List' is set during World War II, specifically depicting the Holocaust
+
+What is the currency in Poland?
+Polish Pounds
+Polish Krone
+Polish Dollars
+Polish Zloty
+4
+The currency used in Poland is the Polish Zloty
+
+What is Saudi Arabia the biggest producer of?
+Oil
+Coal
+Coffee
+Bamboo
+1
+Saudi Arabia is known as the world's largest producer of oil
+
+What is the national language of Canada?
+English
+Dutch
+French
+French and English
+4
+Canada has two official languages, French and English
+
+What Italian city is famous for its system of canals?
+Rome
+Naples
+Venice
+Milano
+3
+Venice is well-known for its intricate system of canals, making it a unique and picturesque city
+
+How many rings are on the Olympic flag?
+None
+4
+5
+7
+3
+The Olympic flag consists of five interlocking rings, representing the five continents and the unity of athletes worldwide
+
