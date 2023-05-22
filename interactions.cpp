@@ -28,6 +28,7 @@ std::string get_input_from_user()
     isWaitingForInput = true;
     std::string input;
     std::cin >> input;
+    std::cin.ignore();
     cachedInput = input; // Store the input from the user
     isWaitingForInput = false;
     return input;
@@ -75,4 +76,39 @@ std::string get_input_from_user_with_timeout(int seconds)
         }
         return cachedInput;
     }
+}
+
+void clear_screen(int width, int height)
+{
+    std::string line = "";
+    for (int x = 0; x < width; x++)
+    {
+        line = line + "";
+    }
+    line = line + "\n";
+    std::string out = "\033[H";
+    for (int y = 0; y < height; y++)
+    {
+        out = out + line;
+    }
+    out = out + "\033[H";
+    std::cout << out;
+    std::cout.flush();
+}
+
+void enter_to_continue()
+{
+    std::cout << "Press ENTER to continue...";
+    std::cout.flush();
+    if (isWaitingForInput) // Check for race conditions
+    {
+        while (isWaitingForInput)
+        {
+            std::cout.flush();
+        }
+        return;
+    }
+    isWaitingForInput = true;
+    std::cin.ignore();
+    isWaitingForInput = false;
 }
