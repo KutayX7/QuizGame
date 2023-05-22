@@ -7,6 +7,21 @@
 #include "Question.h"
 #include "file.h"
 
+std::list<Question> fix_question_list_order(std::list<Question> qlist)
+{
+    std::list<Question> qlist2;
+    int size_l = qlist.size();
+    for (int i; i < size_l; i++)
+    {
+        Question q = qlist.front();
+        qlist.pop_front();
+        q.id = i;
+        q.index = i + 1;
+        qlist2.push_back(q);
+    }
+    return qlist2;
+}
+
 std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
 {
     std::ifstream file (fileName, std::ifstream::in);
@@ -92,7 +107,7 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
         qlist2.sort();
         return qlist2;
     }
-    return qlist;
+    return fix_question_list_order(qlist);
 }
 
 std::list<Question> getallquestions(bool randomOrder)
@@ -104,5 +119,5 @@ std::list<Question> getallquestions(bool randomOrder)
     ql1.merge(ql2);
     ql1.merge(ql3);
     ql1.merge(ql4);
-    return ql1;
+    return fix_question_list_order(ql1);
 }
