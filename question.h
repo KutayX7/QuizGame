@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 
@@ -12,4 +14,6 @@ public:
     void printq();
     bool check(int answer);
     bool check(std::string answer);
+    bool operator<(Question other);
+    bool operator>(Question other);
 };
