@@ -13,8 +13,9 @@ int main()
 {
     clear_screen(); // Always call this first
     print_animated("\033[1;33mWelcome to The Quiz Game! \n\033[0m\n", 1.0);
+    std::list<Question> qlist = getallquestions(false);
     enter_to_continue();
-    std::list<Question> qlist = getallquestions(true);
+    int score = 0;
     int size = qlist.size();
     for (int i;i < size;i++)
     {
@@ -25,9 +26,11 @@ int main()
         {
             clear_screen();
             cout << "Game over! You're a failure! \n";
-            enter_to_continue();
             break;
         }
+        score++;
     }
+    cout << "\n\033[1;33m Total Score : " << score << "\033[0m\n\n";
+    enter_to_continue();
     return 0;
 }
