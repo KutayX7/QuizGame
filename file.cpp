@@ -57,6 +57,7 @@ std::list<Question> randomize_question_list(std::list<Question> qlist) // This h
         do
         {
             rnum = std::rand() % size;
+            found = false;
             for (int j = 0; j < size; j++)
             {
                 if (indexArr[j] == rnum)
