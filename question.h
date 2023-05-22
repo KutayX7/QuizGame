@@ -14,6 +14,7 @@ public:
     void printq();
     bool check(int answer);
     bool check(std::string answer);
+    bool prompt(float timeout = 10.0);
     bool operator<(Question other);
     bool operator>(Question other);
 };
