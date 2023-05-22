@@ -12,6 +12,7 @@ using namespace std;
 int main()
 {
     clear_screen(); // Always call this first
+    srand(time(NULL));
     print_animated("\033[1;33mWelcome to The Quiz Game! \n\033[0m\n", 1.0);
     std::list<Question> qlist = getallquestions(true);
     enter_to_continue();
