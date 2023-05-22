@@ -1,0 +1,30 @@
+// This is a comment
+
+// Comments and empty lines are ignored
+
+// Questions are defined in 8 lines
+// 1st line : The question.
+// 2nd, 3rd, 4th, 5th lines : choices
+// 6th line : index of the correct answer (starts at 1)
+// 7th line : **description** for the correct asnwer
+// 8th line : empty line, allows better visibility for humans
+// an empty line is required at the last line
+
+// "\n" will be interpreted as new line (without the quotation marks)
+
+
+In which Italian city can you find the Colosseum?
+Venice
+Rome
+Naples
+Milan
+2
+You can find the Colosseum in Rome
+
+How many sides does a hexagon have?
+5
+6
+7
+8
+2
+A hexagon has 6 sides

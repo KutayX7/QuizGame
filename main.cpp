@@ -1,40 +1,33 @@
 #include <iostream>
 #include <string>
+#include <list>
 #include <cstdlib>
 #include "textAnimator.h"
 #include "interactions.h"
 #include "question.h"
+#include "file.h"
 
 using namespace std;
 
 int main()
 {
-    print_animated("Welcome to The Quiz Game! \n", 1.0);
-    Question q1;
-    q1.question = "Test question 1";
-    q1.id = 0;
-    q1.index = 1;
-    string options[] = {" Option 1 ( | )"," Option 2 (\\|/)"," Option 3 (This one is correct)"," Option 4 (Absolutely incorrect)"};
-    q1.options[0] = options[0];
-    q1.options[1] = options[1];
-    q1.options[2] = options[2];
-    q1.options[3] = options[3];
-    q1.correct_option = 3 - 1;
-    q1.printq();
-    string input = get_input_from_user_with_timeout(10);
-    if (input == "")
+    clear_screen(); // Always call this first
+    print_animated("\033[1;33mWelcome to The Quiz Game! \n\033[0m\n", 1.0);
+    enter_to_continue();
+    std::list<Question> qlist = getallquestions(true);
+    int size = qlist.size();
+    for (int i;i < size;i++)
     {
-        cout << "\n Time's up! You're a failure!";
-        cout << "\n The correct answer was " << q1.correct_option + 1 << "\n";
-    }
-    else if (q1.check(input))
-    {
-        cout << "\n Correct!";
-    }
-    else
-    {
-        cout << "\n Incorrect! You're a menace to the society!";
-        cout << "\n The correct answer was " << q1.correct_option + 1 << "\n";
+        Question q = qlist.front();
+        qlist.pop_front();
+        bool r = q.prompt();
+        if (!r)
+        {
+            clear_screen();
+            cout << "Game over! You're a failure! \n";
+            enter_to_continue();
+            break;
+        }
     }
     return 0;
 }
