@@ -7,7 +7,8 @@
 #include "Question.h"
 #include "file.h"
 
-std::list<Question> fix_question_list_order(std::list<Question> qlist) // A cheap fix ;)
+// A cheap fix for question indices
+std::list<Question> fix_question_list_order(std::list<Question> qlist)
 {
     std::list<Question> qlist_temp;
     int size_l = qlist.size();
@@ -22,7 +23,9 @@ std::list<Question> fix_question_list_order(std::list<Question> qlist) // A chea
     return qlist_temp;
 }
 
-std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list<Question> qlist2) // Not safe! Clears inputted lists!
+// Combines two list into one
+// Input lists will be cleared
+std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list<Question> qlist2)
 {
     int size_l1 = qlist1.size();
     int size_l2 = qlist2.size();
@@ -42,8 +45,9 @@ std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list
     return fix_question_list_order(qlist_temp);
 }
 
-// TODO: Improve performance of the function below
-std::list<Question> randomize_question_list(std::list<Question> qlist) // This has terrible performance! Don't use it on very large lists!
+// TODO: Improve performance of the function below.
+// This has terrible performance! Don't use it on very large lists!
+std::list<Question> randomize_question_list(std::list<Question> qlist)
 {
     int size = qlist.size();
     int *indexArr = new int[size];
@@ -155,6 +159,7 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
     return fix_question_list_order(qlist);
 }
 
+// Returns all the questions from all the files
 std::list<Question> getallquestions(bool randomOrder)
 {
     // auto ql1 = getquestionsfromfile(".\\data\\questions\\generalQuestions.txt", randomOrder); // Not in use for now.
@@ -162,5 +167,9 @@ std::list<Question> getallquestions(bool randomOrder)
     auto ql3 = getquestionsfromfile(".\\data\\questions\\normalQuestions.txt", randomOrder);
     auto ql4 = getquestionsfromfile(".\\data\\questions\\hardQuestions.txt", randomOrder);
     auto cql = combine_question_lists(combine_question_lists(ql2, ql3), ql4);
+    if (randomOrder)
+    {
+        return randomize_question_list(cql);
+    }
     return fix_question_list_order(cql);
 }
