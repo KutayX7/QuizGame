@@ -116,13 +116,13 @@ int main()
     while (true)
     {
         clear_screen();
-        print_animated("\033[1;33mWelcome to The Quiz Game!\033[0m\n", 1.0);
-        print_animated("\033[1;32mPlease select a gamemode \033[0m\n", 1.0);
-        print_animated("\033[1;34m 1) Easy (20 questions) \033[0m\n", 0.25);
-        print_animated("\033[1;34m 2) Normal (20 questions) \033[0m\n", 0.25);
-        print_animated("\033[1;34m 3) Hard (20 questions) \033[0m\n", 0.25);
-        print_animated("\033[1;34m 4) Mix (30 questions) \033[0m\n", 0.25);
-        print_animated("\033[1;34m 5) All of them (Every question) \033[0m\n", 0.25);
+        print_animated("\033[1;33mWelcome to The Quiz Game!\033[0m\n", 0.75);
+        print_animated("\033[1;32mPlease select a gamemode \033[0m\n", 0.75);
+        print_animated("\033[1;34m 1) Easy (20 questions) \033[0m\n", 0.1);
+        print_animated("\033[1;34m 2) Normal (20 questions) \033[0m\n", 0.1);
+        print_animated("\033[1;34m 3) Hard (20 questions) \033[0m\n", 0.1);
+        print_animated("\033[1;34m 4) Mix (30 questions) \033[0m\n", 0.1);
+        print_animated("\033[1;34m 5) All of them (Every question) \033[0m\n", 0.1);
         print_animated("\033[1;34m 0) Exit \033[0m\n", 0.1);
         string input = get_input_from_user();
         if (input == "0")

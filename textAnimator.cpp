@@ -15,13 +15,13 @@ void wait(float seconds) // Avoid using this function directly
     _A_THREAD_WAIT_FINISHED = true;
 }
 
-void wait_aync(float seconds) // Use this for waiting instead
+void wait_aync(float seconds) // Use this for waiting
 {
     std::thread thread_1 (wait, seconds);
-    thread_1.detach(); // Fixes a weird bug when run outside of VS Code debug
+    thread_1.detach(); // ASYNC
     while (!_A_THREAD_WAIT_FINISHED)
     {
-        std::cout.flush(); // Do not remove this!
+        std::cout.flush();
     }
     _A_THREAD_WAIT_FINISHED = false;
 }
@@ -33,7 +33,7 @@ void print_animated(std::string text, float seconds)
     {
         return;
     }
-    float waitTime = (seconds / ((float) length)) + 0.01; // Calculate the time interval between each letter to print.
+    float waitTime = (seconds / ((float) length)) + 0.001; // Calculate the time interval between each letter to print.
     for (int i; i < length; i++) // Iterate over the string.
     {
         std::cout << text[i]; // Print the char.

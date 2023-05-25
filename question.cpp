@@ -16,7 +16,7 @@ void Question::printq()
     clear_screen();
     std::cout << "\033[1;36m ( Question : #" << index << " ) ";
     int length = question.length();
-    print_animated(question, ((float) length) * 0.1);
+    print_animated(question, ((float) length) * 0.05);
     std::cout << "\n\033[0m";
     print_animated(" 1) " + options[0] + "\n", 0.2);
     print_animated(" 2) " + options[1] + "\n", 0.2);
@@ -69,14 +69,14 @@ bool Question::prompt(float timeout)
     {
         std::cout << "\033[1;32mCorrect!\033[0m\n";
         std::cout << "Description: ";
-        print_animated(description + "\n", 1.0);
+        print_animated(description + "\n", 0.75);
         enter_to_continue();
     }
     else
     {
         std::cout << "\033[1;31mInCorrect!\033[0m\n";
         std::cout << "Description: ";
-        print_animated(description + "\n", 4.0);
+        print_animated(description + "\n", 3.0);
         enter_to_continue();
     }
     return correct;
