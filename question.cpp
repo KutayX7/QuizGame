@@ -18,10 +18,10 @@ void Question::printq()
     int length = question.length();
     print_animated(question, ((float) length) * 0.05);
     std::cout << "\n\033[0m";
-    print_animated(" 1) " + options[0] + "\n", 0.2);
-    print_animated(" 2) " + options[1] + "\n", 0.2);
-    print_animated(" 3) " + options[2] + "\n", 0.2);
-    print_animated(" 4) " + options[3] + "\n", 0.2);
+    print_animated(" 1) " + options[0] + "\n", 0.5);
+    print_animated(" 2) " + options[1] + "\n", 0.5);
+    print_animated(" 3) " + options[2] + "\n", 0.5);
+    print_animated(" 4) " + options[3] + "\n", 0.5);
 }
 
 bool Question::check(int answer)

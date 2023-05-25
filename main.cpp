@@ -110,20 +110,25 @@ Score full_round()
 
 int main()
 {
-    clear_screen(); // Always call this first
+    clear_screen();
     unsigned int extra_entropy; // Uninitialized variable. Who knows what it will be.
     srand(time(NULL) + extra_entropy); // Set randomseed from combination of current time and some random value
     while (true)
     {
         clear_screen();
         print_animated("\033[1;33mWelcome to The Quiz Game!\033[0m\n", 0.75);
-        print_animated("\033[1;32mPlease select a gamemode \033[0m\n", 0.75);
-        print_animated("\033[1;34m 1) Easy (20 questions) \033[0m\n", 0.1);
-        print_animated("\033[1;34m 2) Normal (20 questions) \033[0m\n", 0.1);
-        print_animated("\033[1;34m 3) Hard (20 questions) \033[0m\n", 0.1);
-        print_animated("\033[1;34m 4) Mix (30 questions) \033[0m\n", 0.1);
-        print_animated("\033[1;34m 5) All of them (Every question) \033[0m\n", 0.1);
-        print_animated("\033[1;34m 0) Exit \033[0m\n", 0.1);
+        print_animated("\033[1;32mPlease select a gamemode \033[0m\n", 0.2);
+
+        cout << "\033[1;34m";
+        print_animated(
+        "1) Easy (20 questions)\n"
+        "2) Normal (20 questions)\n"
+        "3) Hard (20 questions)\n"
+        "4) Mix (30 questions)\n"
+        "5) All of them (Every question)\n"
+        "0) Exit", 0.5);
+        cout << "\033[0m\n";
+
         string input = get_input_from_user();
         if (input == "0")
         {
