@@ -5,39 +5,48 @@
 #include <chrono>
 #include <thread>
 
-bool _A_THREAD_WAIT_FINISHED = false;
-
-void wait(float seconds) // Avoid using this function directly
+// Waits for given seconds.
+// Not very accurate!
+void wait(double seconds)
 {
-    _A_THREAD_WAIT_FINISHED = false;
-    int ms = (int) (seconds * 1000.0);
+    int ms = (int) (seconds * ((double) 1000.0));
     std::this_thread::sleep_for(std::chrono::milliseconds(ms)); // Wait
-    _A_THREAD_WAIT_FINISHED = true;
 }
 
-void wait_aync(float seconds) // Use this for waiting instead
+// Very fast queued printing of individual characters.
+// Edga-cases are currently unknown.
+void print_char(char c, double delay, int position, int* counter)
 {
-    std::thread thread_1 (wait, seconds);
-    thread_1.detach(); // Fixes a weird bug when run outside of VS Code debug
-    while (!_A_THREAD_WAIT_FINISHED)
+    wait(delay);
+    while (*counter != position)
     {
-        std::cout.flush(); // Do not remove this!
+        std::cout.flush();
     }
-    _A_THREAD_WAIT_FINISHED = false;
+    std::cout << c;
+    std::cout.flush();
+    *counter += 1;
 }
 
-void print_animated(std::string text, float seconds)
+// Prints the given string in the given time limit.
+// Probably not thread safe. Don't call this outside of the main thread!
+void print_animated(std::string text, double seconds)
 {
+    seconds = (double) seconds;
     int length = text.length(); // Get length of the text.
     if (length < 1) // No text, no print.
     {
         return;
     }
-    float waitTime = (seconds / ((float) length)) + 0.01; // Calculate the time interval between each letter to print.
-    for (int i; i < length; i++) // Iterate over the string.
+    int counter = 0;
+    int* counter_ptr = &counter;
+    double waitTime = (seconds / ((double) length)) + 0.000001; // Calculate the time interval between each letter to print.
+    for (int i = 0; i < length; i++) // Iterate over the string. Schedules characters to print.
     {
-        std::cout << text[i]; // Print the char.
-        std::cout.flush();
-        wait_aync(waitTime);
+        std::thread print_thread (print_char, text[i], waitTime * i, i, counter_ptr);
+        print_thread.detach();
+    }
+    while (counter < length)
+    {
+        std::cout.flush(); // A bit inefficient but accurate way of waiting.
     }
 }

@@ -7,9 +7,10 @@
 #include "Question.h"
 #include "file.h"
 
+// A cheap fix for question indices
 std::list<Question> fix_question_list_order(std::list<Question> qlist)
 {
-    std::list<Question> qlist2;
+    std::list<Question> qlist_temp;
     int size_l = qlist.size();
     for (int i = 0; i < size_l; i++)
     {
@@ -17,32 +18,36 @@ std::list<Question> fix_question_list_order(std::list<Question> qlist)
         qlist.pop_front();
         q.id = i;
         q.index = i + 1;
-        qlist2.push_back(q);
+        qlist_temp.push_back(q);
     }
-    return qlist2;
+    return qlist_temp;
 }
 
-std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list<Question> qlist2) // Not safe!
+// Combines two list into one
+// Input lists will be cleared
+std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list<Question> qlist2)
 {
     int size_l1 = qlist1.size();
     int size_l2 = qlist2.size();
-    std::list<Question> qlist3;
+    std::list<Question> qlist_temp;
     for (int i = 0; i < size_l1; i++)
     {
         Question q = qlist1.front();
         qlist1.pop_front();
-        qlist3.push_back(q);
+        qlist_temp.push_back(q);
     }
     for (int i = 0; i < size_l2; i++)
     {
         Question q = qlist2.front();
         qlist2.pop_front();
-        qlist3.push_back(q);
+        qlist_temp.push_back(q);
     }
-    return fix_question_list_order(qlist3);
+    return fix_question_list_order(qlist_temp);
 }
 
-std::list<Question> randomize_question_list(std::list<Question> qlist) // This has terrible performance! Don't use it on very large lists!
+// TODO: Improve performance of the function below.
+// This has terrible performance! Don't use it on very large lists!
+std::list<Question> randomize_question_list(std::list<Question> qlist)
 {
     int size = qlist.size();
     int *indexArr = new int[size];
@@ -69,18 +74,18 @@ std::list<Question> randomize_question_list(std::list<Question> qlist) // This h
         } while (found);
         indexArr[i] = rnum;
     }
-    std::list<Question> qlist2;
+    std::list<Question> qlist_temp;
     for (int i = 0; i < size; i++)
     {
         Question q = qlist.front();
         qlist.pop_front();
         q.id = indexArr[i];
         q.index = indexArr[i] + 1;
-        qlist2.push_back(q);
+        qlist_temp.push_back(q);
     }
-    delete[] indexArr;
-    qlist2.sort();
-    return fix_question_list_order(qlist2);
+    delete[] indexArr; // Cleans up memory. DO NOT REMOVE THIS LINE!!!
+    qlist_temp.sort(); // Hopefully it is fast enough
+    return qlist_temp;
 }
 
 std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
@@ -146,6 +151,7 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
         std::getline(file, q.description);
         qlist.push_back(q);
     }
+    file.close();
     if (randomOrder)
     {
         return randomize_question_list(qlist);
@@ -153,13 +159,17 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
     return fix_question_list_order(qlist);
 }
 
+// Returns all the questions from all the files
 std::list<Question> getallquestions(bool randomOrder)
 {
-    // auto ql1 = getquestionsfromfile(".\\data\\questions\\generalQuestions.txt", randomOrder);
+    // auto ql1 = getquestionsfromfile(".\\data\\questions\\generalQuestions.txt", randomOrder); // Not in use for now.
     auto ql2 = getquestionsfromfile(".\\data\\questions\\easyQuestions.txt", randomOrder);
     auto ql3 = getquestionsfromfile(".\\data\\questions\\normalQuestions.txt", randomOrder);
     auto ql4 = getquestionsfromfile(".\\data\\questions\\hardQuestions.txt", randomOrder);
-    auto cql = combine_question_lists(ql2, ql3);
-    cql = combine_question_lists(cql, ql4);
+    auto cql = combine_question_lists(combine_question_lists(ql2, ql3), ql4);
+    if (randomOrder)
+    {
+        return randomize_question_list(cql);
+    }
     return fix_question_list_order(cql);
 }

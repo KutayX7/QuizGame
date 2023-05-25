@@ -26,7 +26,7 @@ What is the largest canyon in the world?
 Verdon Gorge, France
 King's Canyon, Australia
 Grand Canyon, USA
-Fjaðrárgljúfur Canyon, Iceland
+Fjaorargljufur Canyon, Iceland
 3
 The Grand Canyon, located in the United States, is the largest canyon in the world
 
@@ -103,12 +103,12 @@ How many bones are there in an adult human body?
 An adult human body typically has 206 bones
 
 Who is the 1st President of the Republic of Turkey?
-Mustafa Kemal Atatürk
+Mustafa Kemal Ataturk
 Vahdettin
-Ismet Inönü
+Ismet Inonu
 Celal Bayar
 1 
-Mustafa Kemal Atatürk served as the first President of the Republic of Turkey
+Mustafa Kemal Ataturk served as the first President of the Republic of Turkey
 
 What are the main colors on the flag of Spain?
 Black and yellow
