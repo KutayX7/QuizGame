@@ -113,12 +113,22 @@ int main()
     clear_screen();
     unsigned int extra_entropy; // Uninitialized variable. Who knows what it will be.
     srand(time(NULL) + extra_entropy); // Set randomseed from combination of current time and some random value
+    print_animated("\033[1;33mWarning: Do not type anything while the text is being displayed!\033[0m\n", 0.2);
+    print_animated("\033[1;33mWarning: Do not scroll or use scroll wheel!\033[0m\n", 0.2);
+    print_animated("\033[1;33mWarning: Do not use arrow keys, space key, backspace key or mouse!\033[0m\n", 0.2);
+    print_animated("\033[1;33mWarning: Questions can only be answered with digits 1, 2, 3 and 4.\033[0m\n", 0.2);
+    print_animated("\033[1;33mWarning: Make sure the window size is enough to display these warnings without any cropping or wrapping.\033[0m\n", 0.2);
+    print_animated("\033[1;33mWarning: Do not run 2 or more instances of this program at once!\033[0m\n", 0.2);
+    print_animated("\033[1;33mWarning: In the case of the program gets stuck, terminate the program IMMEDIATELY!\033[0m\n", 0.2);
+    print_animated("\033[1;33m         Not properly terminating the program will eventually cause your computer to crash!\033[0m\n", 0.2);
+    print_animated("\033[1;33m         It happened before! Just saying.\033[0m\n", 0.2);
+    print_animated("\033[1;33mWarning: You will not see these warnings again!\033[0m\n\n", 0.2);
+    enter_to_continue();
     while (true)
     {
         clear_screen();
-        print_animated("\033[1;33mWelcome to The Quiz Game!\033[0m\n", 0.75);
+        print_animated("Welcome to The Quiz Game!\n", 0.75);
         print_animated("\033[1;32mPlease select a gamemode \033[0m\n", 0.2);
-
         cout << "\033[1;34m";
         print_animated(
         "1) Easy (20 questions)\n"
@@ -128,7 +138,6 @@ int main()
         "5) All of them (Every question)\n"
         "0) Exit", 0.5);
         cout << "\033[0m\n";
-
         string input = get_input_from_user();
         if (input == "0")
         {

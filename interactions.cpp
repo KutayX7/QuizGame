@@ -83,15 +83,15 @@ void clear_screen(int width, int height)
     std::string line = "";
     for (int x = 0; x < width; x++)
     {
-        line = line + "";
+        line = line + " ";
     }
     line = line + "\n";
-    std::string out = "\033[H";
+    std::string out = "\033[0;0H";
     for (int y = 0; y < height; y++)
     {
         out = out + line;
     }
-    out = out + "\033[H";
+    out = out + "\033[0;0H";
     std::cout << out;
     std::cout.flush();
 }
