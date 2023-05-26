@@ -3,7 +3,7 @@ noob
 pro
 9001
 hacker
-4294967295
+2147483647
 fake_user_1
 1
 fake_user_2
