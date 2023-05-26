@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "Question.h"
 #include "file.h"
+#include "user.h"
 
 // A cheap fix for question indices
 std::list<Question> fix_question_list_order(std::list<Question> qlist)
@@ -172,4 +173,69 @@ std::list<Question> getallquestions(bool randomOrder)
         return randomize_question_list(cql);
     }
     return fix_question_list_order(cql);
+}
+
+bool erase_all_user_data()
+{
+    std::ofstream file;
+    file.open(".\\data\\userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    file.close();
+    return true;
+}
+
+std::list<User> load_user_data()
+{
+    std::list<User> users;
+    std::ifstream file;
+    file.open(".\\data\\userdata.txt", std::ofstream::in);
+    while (!file.eof())
+    {
+        std::string name = "", score = "";
+        std::getline(file, name);
+        if (name.length() < 1)
+        {
+            continue;
+        }
+        if (file.eof())
+        {
+            break;
+        }
+        std::getline(file, score);
+        if (score.length() < 1)
+        {
+            score = "0";
+        }
+        int score_int = 0;
+        try
+        {
+            score_int = std::stoi(score);
+        }
+        catch(const std::exception& e)
+        {
+            score_int = -1;
+        }
+        User user = User(name, score_int);
+        users.push_back(user);
+    }
+    file.close();
+    return users;
+}
+
+bool save_user_data(std::list<User> users)
+{
+    int size = users.size();
+    if (size == 0) // Don't allow empty save
+    {
+        return false;
+    }
+    std::ofstream file;
+    file.open(".\\data\\userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    for (int i = 0; i < size; i++)
+    {
+        User user = users.front();
+        users.pop_front();
+        file << user.serialize();
+    }
+    file.close();
+    return true;
 }
