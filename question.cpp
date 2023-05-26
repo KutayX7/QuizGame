@@ -63,7 +63,15 @@ bool Question::check(std::string answer)
 bool Question::prompt(float timeout)
 {
     printq();
-    std::string input = get_input_from_user_with_timeout(timeout);
+    std::string input;
+    if (timeout > 0)
+    {
+        input = get_input_from_user_with_timeout(timeout);
+    }
+    else
+    {
+        input = get_input_from_user();
+    }
     bool correct = check(input);
     if (correct)
     {
