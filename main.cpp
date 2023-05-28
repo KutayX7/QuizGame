@@ -337,7 +337,7 @@ int option_settings()
 int option_create_account()
 {
     clear_screen();
-    string allowed_chars = "abcdefghijklmnopqrstuvwxyz";
+    string allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     print_animated("\033[1;33mPlease choose a username. (3-12 characters long)\n", 1.0);
     print_animated("Usernames can only contaion alphanumeric characters and optionally only one underscore.\033[0m\n", 1.0);
     cout << "> ";
