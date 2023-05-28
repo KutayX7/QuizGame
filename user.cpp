@@ -1,9 +1,13 @@
 #include <iostream>
 #include <string>
-#include <unordered_map>
 #include "user.h"
 #include "interactions.h"
 
+User::User()
+{
+    name = "unnamed";
+    score = 0;
+};
 User::User(std::string _name, int _score)
 {
     name = _name;
@@ -47,7 +51,6 @@ bool LeaderBoard::add(User &user)
     if (!found)
     {
         users.push_back(user);
-        users.sort();
     }
     return !found;
 }
@@ -99,46 +102,4 @@ void LeaderBoard::print()
             break;
         }
     }
-}
-
-Settings::Settings()
-{
-    map = std::unordered_map<std::string, bool>();
-    set("TIMEOUT_ENABLED", true);
-    set("AUTO_SAVE", true);
-    set("DEBUG_MODE", false);
-    set("SUDO_MODE", false);
-}
-
-bool Settings::set(std::string setting, bool value)
-{
-    map[setting] = value;
-    if (map[setting] == value)
-    {
-        return true;
-    }
-    return false;
-}
-
-bool Settings::get(std::string setting)
-{
-    if (map[setting] == true)
-    {
-        return true;
-    }
-    return false;
-}
-std::string Settings::get_str(std::string setting)
-{
-    if (map[setting] == true)
-    {
-        return "ON";
-    }
-    return "OFF";
-}
-
-bool Settings::toggle(std::string setting)
-{
-    set(setting, !(get(setting)));
-    return get(setting);
 }
