@@ -7,6 +7,7 @@
 #include "question.h"
 #include "file.h"
 #include "user.h"
+#include "settings.h"
 
 using namespace std;
 
@@ -18,8 +19,9 @@ bool TIMER_ENBALED = true;
 
 Settings SETTINGS;
 
-list<User> USERS;
 LeaderBoard LEADERBOARD;
+
+User *CURRENT_USER;
 
 struct Score
 {
@@ -65,7 +67,15 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
     {
         Question q = qlist.front();
         qlist.pop_front();
-        bool r = q.prompt(TIME_LIMIT); // Ask the question to the user
+        bool r = false;
+        if (SETTINGS.get("TIMEOUT_ENABLED"))
+        {
+            r = q.prompt(TIME_LIMIT , SETTINGS.get("DEBUG_MODE")); // Ask the question to the user
+        }
+        else
+        {
+            r = q.prompt(-1, SETTINGS.get("DEBUG_MODE")); // Ask the question to the user without time limit
+        }
         answered++;
         if (r) // Check if the asnwer is true, if so, increment the correct counter
         {
@@ -87,6 +97,12 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
     clear_screen();
     struct Score round_score = {answered, correct, incorrect};
     show_gameover(round_score);
+    int total_score = correct * CORRECT_WEIGHT - incorrect * INCORRECT_WEIGHT;
+    CURRENT_USER->score += max(total_score, 0);
+    if (SETTINGS.get("AUTO_SAVE"))
+    {
+        save_user_data(LEADERBOARD.users);
+    }
     return round_score;
 }
 
@@ -119,12 +135,13 @@ Score full_round()
 int select_mode()
 {
     clear_screen();
-    print_animated("\033[1;35mWelcome to The Quiz Game!\033[0m\n", 0.75);
+    print_animated("\033[1;35mWelcome to The Quiz Game \033[1;32m" + CURRENT_USER->name + "\033[0m!\n", 0.75);
     print_animated("\033[1;34mPlease choose a option.\033[0m\n", 0.25);
     print_animated(
     "1) Play\n"
     "2) Leaderboard\n"
     "3) Settings\n"
+    "4) Switch user\n"
     "0) Exit\n", 0.5);
     string input = get_input_from_user();
     if (input == "0")
@@ -142,6 +159,10 @@ int select_mode()
     else if (input == "3")
     {
         return 3;
+    }
+    else if (input == "4")
+    {
+        return 4;
     }
     else
     {
@@ -264,8 +285,7 @@ int option_settings()
         if (SETTINGS.get("SUDO_MODE"))
         {
             bool success = erase_all_user_data();
-            USERS = list<User>();
-            LEADERBOARD.users = USERS;
+            LEADERBOARD.users = list<User>();;
             if (success)
             {
                 print_animated("All the user data has been erased successfully.\n", 1.0);
@@ -314,13 +334,161 @@ int option_settings()
     }
 }
 
+int option_create_account()
+{
+    clear_screen();
+    string allowed_chars = "abcdefghijklmnopqrstuvwxyz";
+    print_animated("\033[1;33mPlease choose a username. (3-12 characters long)\n", 1.0);
+    print_animated("Usernames can only contaion alphanumeric characters and optionally only one underscore.\033[0m\n", 1.0);
+    cout << "> ";
+    string name = "";
+    std::getline(std::cin, name);
+    bool valid = true;
+    int length = name.length();
+    if (length >= 3 && length <= 12)
+    {
+        int underscore_count = 0;
+        for (int i; i < length; i++)
+        {
+            char ch = name[i];
+            if (allowed_chars.find_first_of(ch) != string::npos)
+            {
+                if (ch == '_')
+                {
+                    if (i == 0 || i >= (length - 1))
+                    {
+                        valid = false;
+                        break;
+                    }
+                    else if (underscore_count > 0)
+                    {
+                        valid = false;
+                        break;
+                    }
+                    else
+                    {
+                        underscore_count += 1;
+                    }
+                }
+                else
+                {
+                    valid = false;
+                    break;
+                }
+            }
+            else
+            {
+                valid = false;
+                break;
+            }
+        }
+    }
+    else
+    {
+        valid = false;
+    }
+    if (valid)
+    {
+        User user_temp = User(name, 0);
+        if (LEADERBOARD.add(user_temp))
+        {
+            CURRENT_USER = &LEADERBOARD.users.back();
+            save_user_data(LEADERBOARD.users);
+            return 0;
+        }
+        else
+        {
+            print_animated("\n\033[1;31m Username already exist. Please try again.\033[0m\n", 0.25);
+            enter_to_continue();
+            return 6;
+        }
+    }
+    else
+    {
+        print_animated("\n\033[1;31m Invalid username. Please try again.\033[0m\n", 0.25);
+        enter_to_continue();
+        return 6;
+    }
+}
+
+int option_choose_account()
+{
+    clear_screen();
+    print_animated("\n\033[1;32mSelect an account.\033[0m\n", 0.25);
+    int size = LEADERBOARD.users.size();
+    for (int i = 0; i < size; i++)
+    {
+        User user = LEADERBOARD.users.front();
+        LEADERBOARD.users.pop_front();
+        LEADERBOARD.users.push_back(user);
+        cout << i + 1 << ") " << user.name << "\n";
+    }
+    string opt = get_input_from_user();
+    int selected_index = 0;
+    try
+    {
+        selected_index = std::stoi(opt);
+    }
+    catch(const std::exception& e)
+    {
+        cout << "\033[1;31m" << e.what() << "\033[0m\n";
+        selected_index = 0;
+    }
+    if (selected_index < 1 || selected_index > size)
+    {
+        print_animated("\n\033[1;31mInvalid. Please try again.\033[0m\n", 0.25);
+        enter_to_continue();
+        return 5;
+    }
+    for (int i = 0; i < size; i++)
+    {
+        User user = LEADERBOARD.users.front();
+        LEADERBOARD.users.pop_front();
+        if (i + 1 == selected_index)
+        {
+            LEADERBOARD.users.push_back(user);
+            CURRENT_USER = &LEADERBOARD.users.back();
+        }
+        else
+        {
+            LEADERBOARD.users.push_back(user);
+        }
+    }
+    return 0;
+}
+
+int option_users()
+{
+    clear_screen();
+    int size = LEADERBOARD.users.size();
+    if (size == 0)
+    {
+        return option_create_account();
+    }
+    print_animated("\n\033[1;32m Please select an option.\033[0m\n", 0.5);
+    print_animated("1) Choose an existing account.\n", 0.2);
+    print_animated("2) Create a new account.\n", 0.2);
+    string opt = get_input_from_user();
+    if (opt == "1")
+    {
+        return 5;
+    }
+    else if (opt == "2")
+    {
+        return 6;
+    }
+    else
+    {
+        print_animated("\n\033[1;31m Invalid command. Please try again.\033[0m\n", 0.25);
+        return 4;
+    }
+}
+
 int main()
 {
-    SETTINGS = Settings();
     clear_screen();
-    USERS = load_user_data();
     LEADERBOARD = LeaderBoard();
-    LEADERBOARD.users = USERS;
+    LEADERBOARD.users = load_user_data();
     unsigned int extra_entropy; // Uninitialized variable. Who knows what it will be.
     srand(time(NULL) + extra_entropy); // Set randomseed from combination of current time and some random value
     print_animated("\033[1;33mWarning: Do not type anything while the text is being displayed!\033[0m\n", 0.2);
@@ -332,10 +500,10 @@ int main()
     print_animated("\033[1;33mWarning: In the case of the program gets stuck, terminate the program IMMEDIATELY!\033[0m\n", 0.2);
     print_animated("\033[1;33m         Not properly terminating the program will eventually cause your computer to crash!\033[0m\n", 0.2);
     print_animated("\033[1;33m         It happened before! Just saying.\033[0m\n", 0.2);
-    print_animated("\033[1;33mWarning: You will not see these warnings again!\033[0m\n\n", 0.2);
+    print_animated("\033[1;33mWarning: You will not see these warnings again.\033[0m\n\n", 0.2);
     enter_to_continue();
     clear_screen();
-    int state = 0;
+    int state = 4;
     while (state > -1)
     {
         if (state == 0)
@@ -357,6 +525,15 @@ int main()
             break;
         case 3:
             state = option_settings();
+            break;
+        case 4:
+            state = option_users();
+            break;
+        case 5:
+            state = option_choose_account();
+            break;
+        case 6:
+            state = option_create_account();
             break;
         default:
             print_animated("\n\033[1;31m Unknown command.\033[0m\n", 0.1);
