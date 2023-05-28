@@ -14,6 +14,7 @@ class User
         std::string serialize();
         bool operator<(User &user2);
         bool operator>(User &user2);
+        bool operator==(User user2);
 };
 
 class LeaderBoard

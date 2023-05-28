@@ -17,4 +17,5 @@ public:
     bool prompt(float timeout = 10.0, bool debug_mode = false);
     bool operator<(Question other);
     bool operator>(Question other);
+    bool operator==(Question other);
 };

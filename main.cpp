@@ -63,18 +63,16 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
     int incorrect = 0;
     int answered = 0;
     int size = qlist.size();
-    for (int i = 0; i < size; i++)
+    for (list<Question>::iterator it = qlist.begin(); it != qlist.end(); it++)
     {
-        Question q = qlist.front();
-        qlist.pop_front();
         bool r = false;
         if (SETTINGS.get("TIMEOUT_ENABLED"))
         {
-            r = q.prompt(TIME_LIMIT , SETTINGS.get("DEBUG_MODE")); // Ask the question to the user
+            r = it->prompt(TIME_LIMIT , SETTINGS.get("DEBUG_MODE")); // Ask the question to the user
         }
         else
         {
-            r = q.prompt(-1, SETTINGS.get("DEBUG_MODE")); // Ask the question to the user without time limit
+            r = it->prompt(-1, SETTINGS.get("DEBUG_MODE")); // Ask the question to the user without time limit
         }
         answered++;
         if (r) // Check if the asnwer is true, if so, increment the correct counter
@@ -416,12 +414,11 @@ int option_choose_account()
     clear_screen();
     print_animated("\n\033[1;32mSelect an account.\033[0m\n", 0.25);
     int size = LEADERBOARD.users.size();
-    for (int i = 0; i < size; i++)
+    int i = 0;
+    for (std::list<User>::iterator it = LEADERBOARD.users.begin(); it != LEADERBOARD.users.end(); it++)
     {
-        User user = LEADERBOARD.users.front();
-        LEADERBOARD.users.pop_front();
-        LEADERBOARD.users.push_back(user);
-        cout << i + 1 << ") " << user.name << "\n";
+        cout << i + 1 << ") " << it->name << "\n";
+        i++;
     }
     string opt = get_input_from_user();
     int selected_index = 0;
@@ -440,19 +437,14 @@ int option_choose_account()
         enter_to_continue();
         return 5;
     }
-    for (int i = 0; i < size; i++)
+    i = 0;
+    for (std::list<User>::iterator it = LEADERBOARD.users.begin(); it != LEADERBOARD.users.end(); it++)
     {
-        User user = LEADERBOARD.users.front();
-        LEADERBOARD.users.pop_front();
-        if (i + 1 == selected_index)
+        if ((i + 1) == selected_index)
         {
-            LEADERBOARD.users.push_back(user);
-            CURRENT_USER = &LEADERBOARD.users.back();
+            CURRENT_USER = &*it;
         }
-        else
-        {
-            LEADERBOARD.users.push_back(user);
-        }
+        i++;
     }
     return 0;
 }

@@ -108,3 +108,7 @@ bool Question::operator>(Question other)
 {
     return index > other.index;
 }
+bool Question::operator==(Question other)
+{
+    return (this->id == other.id);
+}
