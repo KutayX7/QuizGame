@@ -163,10 +163,10 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
 // Returns all the questions from all the files
 std::list<Question> getallquestions(bool randomOrder)
 {
-    // auto ql1 = getquestionsfromfile(".\\data\\questions\\generalQuestions.txt", randomOrder); // Not in use for now.
-    auto ql2 = getquestionsfromfile(".\\data\\questions\\easyQuestions.txt", randomOrder);
-    auto ql3 = getquestionsfromfile(".\\data\\questions\\normalQuestions.txt", randomOrder);
-    auto ql4 = getquestionsfromfile(".\\data\\questions\\hardQuestions.txt", randomOrder);
+    // auto ql1 = getquestionsfromfile("./data/questions/generalQuestions.txt", randomOrder); // Not in use for now.
+    auto ql2 = getquestionsfromfile("./data/questions/easyQuestions.txt", randomOrder);
+    auto ql3 = getquestionsfromfile("./data/questions/normalQuestions.txt", randomOrder);
+    auto ql4 = getquestionsfromfile("./data/questions/hardQuestions.txt", randomOrder);
     auto cql = combine_question_lists(combine_question_lists(ql2, ql3), ql4);
     if (randomOrder)
     {
@@ -178,7 +178,7 @@ std::list<Question> getallquestions(bool randomOrder)
 bool erase_all_user_data()
 {
     std::ofstream file;
-    file.open(".\\data\\userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    file.open("./data/userdata.txt", std::ofstream::out | std::ofstream::trunc);
     if (!file.is_open())
     {
         return false;
@@ -191,7 +191,7 @@ std::list<User> load_user_data()
 {
     std::list<User> users;
     std::ifstream file;
-    file.open(".\\data\\userdata.txt", std::ofstream::in);
+    file.open("./data/userdata.txt", std::ofstream::in);
     while (!file.eof())
     {
         std::string name = "", score = "";
@@ -233,7 +233,7 @@ bool save_user_data(std::list<User> users)
         return false;
     }
     std::ofstream file;
-    file.open(".\\data\\userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    file.open("./data/userdata.txt", std::ofstream::out | std::ofstream::trunc);
     if (!file.is_open())
     {
         return false;

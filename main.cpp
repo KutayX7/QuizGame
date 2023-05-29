@@ -106,17 +106,17 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
 
 Score easy_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile(".\\data\\questions\\easyQuestions.txt", true);
+    std::list<Question> qlist = getquestionsfromfile("./data/questions/easyQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score normal_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile(".\\data\\questions\\normalQuestions.txt", true);
+    std::list<Question> qlist = getquestionsfromfile("./data/questions/normalQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score hard_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile(".\\data\\questions\\hardQuestions.txt", true);
+    std::list<Question> qlist = getquestionsfromfile("./data/questions/hardQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score mixed_round(int question_count = 30)
