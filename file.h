@@ -7,7 +7,14 @@
 #include "question.h"
 #include "user.h"
 
+std::list<Question> get_questions_from_file(std::string fileName, bool randomOrder = false);
+
+//[DEPRECATED]
 std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder = false);
+
+std::list<Question> get_all_questions(bool randomOrder = false);
+
+//[DEPRECATED]
 std::list<Question> getallquestions(bool randomOrder = false);
 
 // Delete all user data

@@ -90,7 +90,7 @@ std::list<Question> randomize_question_list(std::list<Question> qlist)
 
 // Get questions from a file
 // When randomOrder is true, questions will be ordered randomly.
-std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
+std::list<Question> get_questions_from_file(std::string fileName, bool randomOrder)
 {
     std::ifstream file (fileName, std::ifstream::in);
     std::list<Question> qlist;
@@ -160,21 +160,29 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
     }
     return fix_question_list_order(qlist);
 }
+std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
+{
+    return get_questions_from_file(fileName, randomOrder);
+}
 
 // Returns all the questions from all the files
 // When randomOrder is true, questions will be ordered randomly.
-std::list<Question> getallquestions(bool randomOrder)
+std::list<Question> get_all_questions(bool randomOrder)
 {
-    // auto ql1 = getquestionsfromfile("./data/questions/generalQuestions.txt", randomOrder); // Not in use for now.
-    auto ql2 = getquestionsfromfile("./data/questions/easyQuestions.txt", randomOrder);
-    auto ql3 = getquestionsfromfile("./data/questions/normalQuestions.txt", randomOrder);
-    auto ql4 = getquestionsfromfile("./data/questions/hardQuestions.txt", randomOrder);
+    // auto ql1 = get_questions_from_file("./data/questions/generalQuestions.txt", randomOrder); // Not in use for now.
+    auto ql2 = get_questions_from_file("./data/questions/easyQuestions.txt", randomOrder);
+    auto ql3 = get_questions_from_file("./data/questions/normalQuestions.txt", randomOrder);
+    auto ql4 = get_questions_from_file("./data/questions/hardQuestions.txt", randomOrder);
     auto cql = combine_question_lists(combine_question_lists(ql2, ql3), ql4);
     if (randomOrder)
     {
         return randomize_question_list(cql);
     }
     return fix_question_list_order(cql);
+}
+std::list<Question> getallquestions(bool randomOrder)
+{
+    return get_all_questions(randomOrder);
 }
 
 // Clears the contents of the "userdata.txt" file.

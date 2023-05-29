@@ -106,27 +106,27 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
 
 Score easy_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile("./data/questions/easyQuestions.txt", true);
+    std::list<Question> qlist = get_questions_from_file("./data/questions/easyQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score normal_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile("./data/questions/normalQuestions.txt", true);
+    std::list<Question> qlist = get_questions_from_file("./data/questions/normalQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score hard_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile("./data/questions/hardQuestions.txt", true);
+    std::list<Question> qlist = get_questions_from_file("./data/questions/hardQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score mixed_round(int question_count = 30)
 {
-    std::list<Question> qlist = getallquestions(true);
+    std::list<Question> qlist = get_all_questions(true);
     return start_round(qlist, question_count);
 }
 Score full_round()
 {
-    std::list<Question> qlist = getallquestions(true);
+    std::list<Question> qlist = get_all_questions(true);
     return start_round(qlist, (int) qlist.size());
 }
 
@@ -337,7 +337,7 @@ int option_create_account()
     clear_screen();
     string allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
     print_animated("\033[1;33mPlease choose a username. (3-12 characters long)\n", 1.0);
-    print_animated("Usernames can only contaion alphanumeric characters and optionally only one underscore.\033[0m\n", 1.0);
+    print_animated("Usernames can only contain alphanumeric characters and optionally only one underscore.\033[0m\n", 1.0);
     cout << "> ";
     string name = "";
     std::getline(std::cin, name);
