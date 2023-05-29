@@ -14,8 +14,6 @@ using namespace std;
 const float CORRECT_WEIGHT = 1;
 const float INCORRECT_WEIGHT = 2;
 float TIME_LIMIT = 10;
-bool USER_DEBUG_MODE = false;
-bool TIMER_ENBALED = true;
 
 Settings SETTINGS;
 
