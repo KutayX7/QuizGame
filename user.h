@@ -22,7 +22,6 @@ class LeaderBoard
     public:
         std::list<User> users;
         LeaderBoard();
-        ~LeaderBoard() = default;
         bool add(User &user);
         bool remove(User &user);
         void print();

@@ -440,7 +440,7 @@ int option_choose_account()
     {
         if ((i + 1) == selected_index)
         {
-            CURRENT_USER = &*it;
+            CURRENT_USER = &(*(it));
         }
         i++;
     }
