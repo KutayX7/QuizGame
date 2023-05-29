@@ -287,7 +287,7 @@ int option_settings()
             if (success)
             {
                 print_animated("All the user data has been erased successfully.\n", 1.0);
-                return 1;
+                return 4;
             }
             else
             {

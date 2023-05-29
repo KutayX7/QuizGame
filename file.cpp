@@ -179,6 +179,10 @@ bool erase_all_user_data()
 {
     std::ofstream file;
     file.open(".\\data\\userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    if (!file.is_open())
+    {
+        return false;
+    }
     file.close();
     return true;
 }
@@ -230,6 +234,10 @@ bool save_user_data(std::list<User> users)
     }
     std::ofstream file;
     file.open(".\\data\\userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    if (!file.is_open())
+    {
+        return false;
+    }
     for (int i = 0; i < size; i++)
     {
         User user = users.front();
