@@ -132,7 +132,7 @@ int select_mode()
 {
     clear_screen();
     print_animated("\033[1;35mWelcome to The Quiz Game \033[1;32m" + CURRENT_USER->name + "\033[0m!\n", 0.75);
-    print_animated("\033[1;34mPlease choose a option.\033[0m\n", 0.25);
+    print_animated("\033[1;34mPlease choose an option.\033[0m\n", 0.25);
     print_animated(
     "1) Play\n"
     "2) Leaderboard\n"
