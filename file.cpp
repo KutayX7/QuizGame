@@ -25,7 +25,6 @@ std::list<Question> fix_question_list_order(std::list<Question> qlist)
 }
 
 // Combines two list into one
-// Input lists will be cleared
 std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list<Question> qlist2)
 {
     int size_l1 = qlist1.size();
@@ -46,8 +45,8 @@ std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list
     return fix_question_list_order(qlist_temp);
 }
 
-// TODO: Improve performance of the function below.
-// This has terrible performance! Don't use it on very large lists!
+// Rnadomizes the order of elements in the list.
+// TODO: Improve the performance.
 std::list<Question> randomize_question_list(std::list<Question> qlist)
 {
     int size = qlist.size();
@@ -85,10 +84,12 @@ std::list<Question> randomize_question_list(std::list<Question> qlist)
         qlist_temp.push_back(q);
     }
     delete[] indexArr; // Cleans up memory. DO NOT REMOVE THIS LINE!!!
-    qlist_temp.sort(); // Hopefully it is fast enough
+    qlist_temp.sort();
     return qlist_temp;
 }
 
+// Get questions from a file
+// When randomOrder is true, questions will be ordered randomly.
 std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
 {
     std::ifstream file (fileName, std::ifstream::in);
@@ -161,6 +162,7 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
 }
 
 // Returns all the questions from all the files
+// When randomOrder is true, questions will be ordered randomly.
 std::list<Question> getallquestions(bool randomOrder)
 {
     // auto ql1 = getquestionsfromfile("./data/questions/generalQuestions.txt", randomOrder); // Not in use for now.
@@ -175,6 +177,7 @@ std::list<Question> getallquestions(bool randomOrder)
     return fix_question_list_order(cql);
 }
 
+// Clears the contents of the "userdata.txt" file.
 bool erase_all_user_data()
 {
     std::ofstream file;
@@ -228,10 +231,6 @@ std::list<User> load_user_data()
 bool save_user_data(std::list<User> users)
 {
     int size = users.size();
-    if (size == 0) // Don't allow empty save
-    {
-        return false;
-    }
     std::ofstream file;
     file.open("./data/userdata.txt", std::ofstream::out | std::ofstream::trunc);
     if (!file.is_open())
