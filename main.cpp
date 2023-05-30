@@ -6,12 +6,20 @@
 #include "interactions.h"
 #include "question.h"
 #include "file.h"
+#include "user.h"
+#include "settings.h"
 
 using namespace std;
 
 const float CORRECT_WEIGHT = 1;
 const float INCORRECT_WEIGHT = 2;
 float TIME_LIMIT = 10;
+
+Settings SETTINGS;
+
+LeaderBoard LEADERBOARD;
+
+User *CURRENT_USER;
 
 struct Score
 {
@@ -53,11 +61,17 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
     int incorrect = 0;
     int answered = 0;
     int size = qlist.size();
-    for (int i = 0; i < size; i++)
+    for (list<Question>::iterator it = qlist.begin(); it != qlist.end(); it++)
     {
-        Question q = qlist.front();
-        qlist.pop_front();
-        bool r = q.prompt(TIME_LIMIT); // Ask the question to the user
+        bool r = false;
+        if (SETTINGS.get("TIMEOUT_ENABLED"))
+        {
+            r = it->prompt(TIME_LIMIT , SETTINGS.get("DEBUG_MODE")); // Ask the question to the user
+        }
+        else
+        {
+            r = it->prompt(-1, SETTINGS.get("DEBUG_MODE")); // Ask the question to the user without time limit
+        }
         answered++;
         if (r) // Check if the asnwer is true, if so, increment the correct counter
         {
@@ -79,38 +93,392 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
     clear_screen();
     struct Score round_score = {answered, correct, incorrect};
     show_gameover(round_score);
+    int total_score = correct * CORRECT_WEIGHT - incorrect * INCORRECT_WEIGHT;
+    CURRENT_USER->score += max(total_score, 0);
+    if (SETTINGS.get("AUTO_SAVE"))
+    {
+        save_user_data(LEADERBOARD.users);
+    }
     return round_score;
 }
 
 Score easy_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile(".\\data\\questions\\easyQuestions.txt", true);
+    std::list<Question> qlist = get_questions_from_file("./data/questions/easyQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score normal_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile(".\\data\\questions\\normalQuestions.txt", true);
+    std::list<Question> qlist = get_questions_from_file("./data/questions/normalQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score hard_round(int question_count = 20)
 {
-    std::list<Question> qlist = getquestionsfromfile(".\\data\\questions\\hardQuestions.txt", true);
+    std::list<Question> qlist = get_questions_from_file("./data/questions/hardQuestions.txt", true);
     return start_round(qlist, question_count);
 }
 Score mixed_round(int question_count = 30)
 {
-    std::list<Question> qlist = getallquestions(true);
+    std::list<Question> qlist = get_all_questions(true);
     return start_round(qlist, question_count);
 }
 Score full_round()
 {
-    std::list<Question> qlist = getallquestions(true);
+    std::list<Question> qlist = get_all_questions(true);
     return start_round(qlist, (int) qlist.size());
+}
+
+int select_mode()
+{
+    clear_screen();
+    print_animated("\033[1;35mWelcome to The Quiz Game \033[1;32m" + CURRENT_USER->name + "\033[0m!\n", 0.75);
+    print_animated("\033[1;34mPlease choose an option.\033[0m\n", 0.25);
+    print_animated(
+    "1) Play\n"
+    "2) Leaderboard\n"
+    "3) Settings\n"
+    "4) Switch user\n"
+    "0) Exit\n", 0.5);
+    string input = get_input_from_user();
+    if (input == "0")
+    {
+        return 0;
+    }
+    else if (input == "1")
+    {
+        return 1;
+    }
+    else if (input == "2")
+    {
+        return 2;
+    }
+    else if (input == "3")
+    {
+        return 3;
+    }
+    else if (input == "4")
+    {
+        return 4;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+int option_play()
+{
+    clear_screen();
+    print_animated("\033[1;32mPlease select a gamemode \033[0m\n", 0.2);
+    print_animated(
+    "1) Easy (20 questions)\n"
+    "2) Normal (20 questions)\n"
+    "3) Hard (20 questions)\n"
+    "4) Mix (30 questions)\n"
+    "5) All of them (Every question)\n"
+    "0) Return to main menu\n", 0.5);
+    string input = get_input_from_user();
+    if (input == "0")
+    {
+        return 0;
+    }
+    else if (input == "1")
+    {
+        easy_round(20);
+        return 0;
+    }
+    else if (input == "2")
+    {
+        normal_round(20);
+        return 0;
+    }
+    else if (input == "3")
+    {
+        hard_round(20);
+        return 0;
+    }
+    else if (input == "4")
+    {
+        mixed_round(30);
+        return 0;
+    }
+    else if (input == "5")
+    {
+        full_round();
+        return 0;
+    }
+    else
+    {
+        print_animated("\n\033[1;31m Unknown command. Returning to the main menu. \033[0m\n", 0.1);
+        enter_to_continue();
+        return 1;
+    }
+}
+
+int option_settings()
+{
+    clear_screen();
+    print_animated("\033[1;32mOptions: \033[0m\n", 0.2);
+    print_animated("Choose a setting to toggle on/off or activate it.\n", 0.2);
+    print_animated("1) TIMEOUT_ENABLED : " + SETTINGS.get_str("TIMEOUT_ENABLED") + "\n", 0.1);
+    print_animated("2) DEBUG_MODE : " + SETTINGS.get_str("DEBUG_MODE") + "\n", 0.1);
+    print_animated("3) SUDO_MODE : " + SETTINGS.get_str("SUDO_MODE") + "\n", 0.1);
+    print_animated("4) AUTO_SAVE : " + SETTINGS.get_str("AUTO_SAVE") + "\n", 0.1);
+    print_animated("5) Save data now\n", 0.1);
+    print_animated("6) Erase all user data (Requires restart)\n", 0.1);
+    print_animated("0) Return to main menu\n", 0.1);
+    string input = get_input_from_user();
+    if (input == "0")
+    {
+        return 0;
+    }
+    else if (input == "1")
+    {
+        SETTINGS.toggle("TIMEOUT_ENABLED");
+        return 3;
+    }
+    else if (input == "2")
+    {
+        SETTINGS.toggle("DEBUG_MODE");
+        return 3;
+    }
+    else if (input == "3")
+    {
+        SETTINGS.toggle("SUDO_MODE");
+        return 3;
+    }
+    else if (input == "4")
+    {
+        SETTINGS.toggle("AUTO_SAVE");
+        return 3;
+    }
+    else if (input == "5")
+    {
+        bool success = save_user_data(LEADERBOARD.users);
+        if (success)
+        {
+            print_animated("\033[1;32mData saved successfully.\033[0m\n", 0.5);
+            enter_to_continue();
+        }
+        else
+        {
+            print_animated("\033[1;31mData save failed!\033[0m\n", 0.5);
+            if (SETTINGS.get("SUDO_MODE"))
+            {
+                enter_to_continue();
+                return 3;
+            }
+            else
+            {
+                print_animated("Exiting program to prevent further data corruption.", 0.5);
+                return -1;
+            }
+        }
+        return 3;
+    }
+    else if (input == "6")
+    {
+        if (SETTINGS.get("SUDO_MODE"))
+        {
+            bool success = erase_all_user_data();
+            LEADERBOARD.users = list<User>();;
+            if (success)
+            {
+                print_animated("All the user data has been erased successfully.\n", 1.0);
+                return 4;
+            }
+            else
+            {
+                print_animated("\033[1;33mAn unexpected \033[1;31merror\033[1;33m has happened during data deletion.\033[0m\n", 1.0);
+                print_animated("The program has to exit.\n", 1.0);
+                return -1;
+            }
+        }
+        else
+        {
+            print_animated("\033[1;33mAre you sure you want to delete all the user data?\n", 2.5);
+            print_animated("The program will close after this operation.\n", 2.5);
+            print_animated("Type \"Yes-I-know-what-I-am-doing-Please-delete-it.\" with the quotation marks.\n If you don't type it correctly this operation will be canceled.\033[0m\n", 1.5);
+            std::string input2 = get_input_from_user();
+            if (input2 == "\"Yes-I-know-what-I-am-doing-Please-delete-it.\"")
+            {
+                bool success = erase_all_user_data();
+                if (success)
+                {
+                    print_animated("All the user data has been erased successfully.\n", 1.0);
+                    return -1;
+                }
+                else
+                {
+                    print_animated("\033[1;33mAn unexpected \033[1;31merror\033[1;33m has happened during data deletion.\033[0m\n", 1.0);
+                    print_animated("The program has to exit.\n", 1.0);
+                    return -1;
+                }
+            }
+            else
+            {
+                return 3;
+            }
+        }
+        return -1;
+    }
+    else
+    {
+        print_animated("\n\033[1;31m Unknown command. Returning to the main menu. \033[0m\n", 0.1);
+        enter_to_continue();
+        return 0;
+    }
+}
+
+int option_create_account()
+{
+    clear_screen();
+    string allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+    print_animated("\033[1;33mPlease choose a username. (3-12 characters long)\n", 1.0);
+    print_animated("Usernames can only contain alphanumeric characters and optionally only one underscore.\033[0m\n", 1.0);
+    cout << "> ";
+    string name = "";
+    std::getline(std::cin, name);
+    bool valid = true;
+    int length = name.length();
+    if (length >= 3 && length <= 12)
+    {
+        int underscore_count = 0;
+        for (int i; i < length; i++)
+        {
+            char ch = name[i];
+            if (allowed_chars.find_first_of(ch) != string::npos)
+            {
+                if (ch == '_')
+                {
+                    if (i == 0 || i >= (length - 1))
+                    {
+                        valid = false;
+                        break;
+                    }
+                    else if (underscore_count > 0)
+                    {
+                        valid = false;
+                        break;
+                    }
+                    else
+                    {
+                        underscore_count += 1;
+                    }
+                }
+                else
+                {
+                    valid = false;
+                    break;
+                }
+            }
+            else
+            {
+                valid = false;
+                break;
+            }
+        }
+    }
+    else
+    {
+        valid = false;
+    }
+    if (valid)
+    {
+        User user_temp = User(name, 0);
+        if (LEADERBOARD.add(user_temp))
+        {
+            CURRENT_USER = &LEADERBOARD.users.back();
+            save_user_data(LEADERBOARD.users);
+            return 0;
+        }
+        else
+        {
+            print_animated("\n\033[1;31m Username already exist. Please try again.\033[0m\n", 0.25);
+            enter_to_continue();
+            return 6;
+        }
+    }
+    else
+    {
+        print_animated("\n\033[1;31m Invalid username. Please try again.\033[0m\n", 0.25);
+        enter_to_continue();
+        return 6;
+    }
+}
+
+int option_choose_account()
+{
+    clear_screen();
+    print_animated("\n\033[1;32mSelect an account.\033[0m\n", 0.25);
+    int size = LEADERBOARD.users.size();
+    int i = 0;
+    for (std::list<User>::iterator it = LEADERBOARD.users.begin(); it != LEADERBOARD.users.end(); it++)
+    {
+        cout << i + 1 << ") " << it->name << "\n";
+        i++;
+    }
+    string opt = get_input_from_user();
+    int selected_index = 0;
+    try
+    {
+        selected_index = std::stoi(opt);
+    }
+    catch(const std::exception& e)
+    {
+        cout << "\033[1;31m" << e.what() << "\033[0m\n";
+        selected_index = 0;
+    }
+    if (selected_index < 1 || selected_index > size)
+    {
+        print_animated("\n\033[1;31mInvalid. Please try again.\033[0m\n", 0.25);
+        enter_to_continue();
+        return 5;
+    }
+    i = 0;
+    for (std::list<User>::iterator it = LEADERBOARD.users.begin(); it != LEADERBOARD.users.end(); it++)
+    {
+        if ((i + 1) == selected_index)
+        {
+            CURRENT_USER = &(*(it));
+        }
+        i++;
+    }
+    return 0;
+}
+
+int option_users()
+{
+    clear_screen();
+    int size = LEADERBOARD.users.size();
+    if (size == 0)
+    {
+        return option_create_account();
+    }
+    print_animated("\n\033[1;32m Please select an option.\033[0m\n", 0.5);
+    print_animated("1) Choose an existing account.\n", 0.2);
+    print_animated("2) Create a new account.\n", 0.2);
+    string opt = get_input_from_user();
+    if (opt == "1")
+    {
+        return 5;
+    }
+    else if (opt == "2")
+    {
+        return 6;
+    }
+    else
+    {
+        print_animated("\n\033[1;31m Invalid command. Please try again.\033[0m\n", 0.25);
+        return 4;
+    }
 }
 
 int main()
 {
     clear_screen();
+    LEADERBOARD = LeaderBoard();
+    LEADERBOARD.users = load_user_data();
     unsigned int extra_entropy; // Uninitialized variable. Who knows what it will be.
     srand(time(NULL) + extra_entropy); // Set randomseed from combination of current time and some random value
     print_animated("\033[1;33mWarning: Do not type anything while the text is being displayed!\033[0m\n", 0.2);
@@ -122,52 +490,49 @@ int main()
     print_animated("\033[1;33mWarning: In the case of the program gets stuck, terminate the program IMMEDIATELY!\033[0m\n", 0.2);
     print_animated("\033[1;33m         Not properly terminating the program will eventually cause your computer to crash!\033[0m\n", 0.2);
     print_animated("\033[1;33m         It happened before! Just saying.\033[0m\n", 0.2);
-    print_animated("\033[1;33mWarning: You will not see these warnings again!\033[0m\n\n", 0.2);
+    print_animated("\033[1;33mWarning: You will not see these warnings again.\033[0m\n\n", 0.2);
     enter_to_continue();
-    while (true)
+    clear_screen();
+    int state = 4;
+    while (state > -1)
     {
-        clear_screen();
-        print_animated("Welcome to The Quiz Game!\n", 0.75);
-        print_animated("\033[1;32mPlease select a gamemode \033[0m\n", 0.2);
-        cout << "\033[1;34m";
-        print_animated(
-        "1) Easy (20 questions)\n"
-        "2) Normal (20 questions)\n"
-        "3) Hard (20 questions)\n"
-        "4) Mix (30 questions)\n"
-        "5) All of them (Every question)\n"
-        "0) Exit", 0.5);
-        cout << "\033[0m\n";
-        string input = get_input_from_user();
-        if (input == "0")
+        if (state == 0)
         {
+            state = select_mode();
+        }
+        switch (state)
+        {
+        case 0:
+            state = -1;
+            break;
+        case 1:
+            state = option_play();
+            break;
+        case 2:
+            LEADERBOARD.print();
+            enter_to_continue();
+            state = 0;
+            break;
+        case 3:
+            state = option_settings();
+            break;
+        case 4:
+            state = option_users();
+            break;
+        case 5:
+            state = option_choose_account();
+            break;
+        case 6:
+            state = option_create_account();
+            break;
+        default:
+            print_animated("\n\033[1;31m Unknown command.\033[0m\n", 0.1);
+            enter_to_continue();
+            state = 0;
             break;
         }
-        else if (input == "1")
-        {
-            easy_round(20);
-        }
-        else if (input == "2")
-        {
-            normal_round(20);
-        }
-        else if (input == "3")
-        {
-            hard_round(20);
-        }
-        else if (input == "4")
-        {
-            mixed_round(30);
-        }
-        else if (input == "5")
-        {
-            full_round();
-        }
-        else
-        {
-            print_animated("\n\033[1;31m Unknown command. Please try again. \033[0m\n", 0.1);
-            enter_to_continue();
-        }
     }
+    print_animated("\033[1;33mGoodbye!\033[0m\n", 1.0);
+    enter_to_continue();
     return 0;
 }

@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "Question.h"
 #include "file.h"
+#include "user.h"
 
 // A cheap fix for question indices
 std::list<Question> fix_question_list_order(std::list<Question> qlist)
@@ -24,7 +25,6 @@ std::list<Question> fix_question_list_order(std::list<Question> qlist)
 }
 
 // Combines two list into one
-// Input lists will be cleared
 std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list<Question> qlist2)
 {
     int size_l1 = qlist1.size();
@@ -45,8 +45,8 @@ std::list<Question> combine_question_lists(std::list<Question> qlist1, std::list
     return fix_question_list_order(qlist_temp);
 }
 
-// TODO: Improve performance of the function below.
-// This has terrible performance! Don't use it on very large lists!
+// Rnadomizes the order of elements in the list.
+// TODO: Improve the performance.
 std::list<Question> randomize_question_list(std::list<Question> qlist)
 {
     int size = qlist.size();
@@ -84,11 +84,13 @@ std::list<Question> randomize_question_list(std::list<Question> qlist)
         qlist_temp.push_back(q);
     }
     delete[] indexArr; // Cleans up memory. DO NOT REMOVE THIS LINE!!!
-    qlist_temp.sort(); // Hopefully it is fast enough
+    qlist_temp.sort();
     return qlist_temp;
 }
 
-std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
+// Get questions from a file
+// When randomOrder is true, questions will be ordered randomly.
+std::list<Question> get_questions_from_file(std::string fileName, bool randomOrder)
 {
     std::ifstream file (fileName, std::ifstream::in);
     std::list<Question> qlist;
@@ -158,18 +160,97 @@ std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
     }
     return fix_question_list_order(qlist);
 }
+std::list<Question> getquestionsfromfile(std::string fileName, bool randomOrder)
+{
+    return get_questions_from_file(fileName, randomOrder);
+}
 
 // Returns all the questions from all the files
-std::list<Question> getallquestions(bool randomOrder)
+// When randomOrder is true, questions will be ordered randomly.
+std::list<Question> get_all_questions(bool randomOrder)
 {
-    // auto ql1 = getquestionsfromfile(".\\data\\questions\\generalQuestions.txt", randomOrder); // Not in use for now.
-    auto ql2 = getquestionsfromfile(".\\data\\questions\\easyQuestions.txt", randomOrder);
-    auto ql3 = getquestionsfromfile(".\\data\\questions\\normalQuestions.txt", randomOrder);
-    auto ql4 = getquestionsfromfile(".\\data\\questions\\hardQuestions.txt", randomOrder);
+    // auto ql1 = get_questions_from_file("./data/questions/generalQuestions.txt", randomOrder); // Not in use for now.
+    auto ql2 = get_questions_from_file("./data/questions/easyQuestions.txt", randomOrder);
+    auto ql3 = get_questions_from_file("./data/questions/normalQuestions.txt", randomOrder);
+    auto ql4 = get_questions_from_file("./data/questions/hardQuestions.txt", randomOrder);
     auto cql = combine_question_lists(combine_question_lists(ql2, ql3), ql4);
     if (randomOrder)
     {
         return randomize_question_list(cql);
     }
     return fix_question_list_order(cql);
+}
+std::list<Question> getallquestions(bool randomOrder)
+{
+    return get_all_questions(randomOrder);
+}
+
+// Clears the contents of the "userdata.txt" file.
+bool erase_all_user_data()
+{
+    std::ofstream file;
+    file.open("./data/userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    if (!file.is_open())
+    {
+        return false;
+    }
+    file.close();
+    return true;
+}
+
+std::list<User> load_user_data()
+{
+    std::list<User> users;
+    std::ifstream file;
+    file.open("./data/userdata.txt", std::ofstream::in);
+    while (!file.eof())
+    {
+        std::string name = "", score = "";
+        std::getline(file, name);
+        if (name.length() < 1)
+        {
+            continue;
+        }
+        if (file.eof())
+        {
+            break;
+        }
+        std::getline(file, score);
+        if (score.length() < 1)
+        {
+            score = "0";
+        }
+        int score_int = 0;
+        try
+        {
+            score_int = std::stoi(score);
+        }
+        catch(const std::exception& e)
+        {
+            score_int = -1;
+        }
+        User user = User(name, score_int);
+        users.push_back(user);
+    }
+    file.close();
+    return users;
+}
+
+bool save_user_data(std::list<User> users)
+{
+    int size = users.size();
+    std::ofstream file;
+    file.open("./data/userdata.txt", std::ofstream::out | std::ofstream::trunc);
+    if (!file.is_open())
+    {
+        return false;
+    }
+    for (int i = 0; i < size; i++)
+    {
+        User user = users.front();
+        users.pop_front();
+        file << user.serialize();
+    }
+    file.close();
+    return true;
 }
