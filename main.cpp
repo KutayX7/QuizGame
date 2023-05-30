@@ -335,7 +335,8 @@ int option_create_account()
     clear_screen();
     string allowed_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
     print_animated("\033[1;33mPlease choose a username. (3-12 characters long)\n", 1.0);
-    print_animated("Usernames can only contain alphanumeric characters and optionally only one underscore.\033[0m\n", 1.0);
+    print_animated("Usernames can only contain alphanumeric characters and optionally only one underscore.\n", 1.0);
+    print_animated("Type \"0\" if you want to exit.\033[0m\n", 0.25);
     cout << "> ";
     string name = "";
     std::getline(std::cin, name);
@@ -401,6 +402,10 @@ int option_create_account()
     }
     else
     {
+        if (name == "0" || name == "\"0\"")
+        {
+            return -1;
+        }
         print_animated("\n\033[1;31m Invalid username. Please try again.\033[0m\n", 0.25);
         enter_to_continue();
         return 6;
@@ -410,7 +415,8 @@ int option_create_account()
 int option_choose_account()
 {
     clear_screen();
-    print_animated("\n\033[1;32mSelect an account.\033[0m\n", 0.25);
+    print_animated("\033[1;32mSelect an account.\n", 0.25);
+    print_animated("\033[1;33mType \"0\" if you want to exit.\033[0m\n", 0.1);
     int size = LEADERBOARD.users.size();
     int i = 0;
     for (std::list<User>::iterator it = LEADERBOARD.users.begin(); it != LEADERBOARD.users.end(); it++)
@@ -419,6 +425,10 @@ int option_choose_account()
         i++;
     }
     string opt = get_input_from_user();
+    if (opt == "0" || opt == "\"0\"")
+    {
+        return -1;
+    }
     int selected_index = 0;
     try
     {
@@ -455,9 +465,10 @@ int option_users()
     {
         return option_create_account();
     }
-    print_animated("\n\033[1;32m Please select an option.\033[0m\n", 0.5);
+    print_animated("\033[1;32mPlease select an option.\033[0m\n", 0.5);
     print_animated("1) Choose an existing account.\n", 0.2);
     print_animated("2) Create a new account.\n", 0.2);
+    print_animated("0) Exit.\n", 0.1);
     string opt = get_input_from_user();
     if (opt == "1")
     {
@@ -466,6 +477,10 @@ int option_users()
     else if (opt == "2")
     {
         return 6;
+    }
+    else if (opt == "0")
+    {
+        return -1;
     }
     else
     {
@@ -481,6 +496,7 @@ int main()
     LEADERBOARD.users = load_user_data();
     unsigned int extra_entropy; // Uninitialized variable. Who knows what it will be.
     srand(time(NULL) + extra_entropy); // Set randomseed from combination of current time and some random value
+    print_animated("\033[1;33m \033[0m\n", 1.0);
     print_animated("\033[1;33mWarning: Do not type anything while the text is being displayed!\033[0m\n", 0.2);
     print_animated("\033[1;33mWarning: Do not scroll or use scroll wheel!\033[0m\n", 0.2);
     print_animated("\033[1;33mWarning: Do not use arrow keys, space key, backspace key or mouse!\033[0m\n", 0.2);
