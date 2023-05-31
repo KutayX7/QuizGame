@@ -1,9 +1,9 @@
-#include "textAnimator.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <chrono>
 #include <thread>
+#include "textAnimator.h"
 
 // Waits for given seconds.
 // Not very accurate!

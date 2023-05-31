@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <list>
 #include "user.h"
 #include "interactions.h"
 
