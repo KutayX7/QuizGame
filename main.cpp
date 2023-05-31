@@ -40,7 +40,7 @@ void show_gameover(Score round_score)
     }
     cout << "\033[1;32m Correct : " << round_score.correct << "\033[0m\n";
     cout << "\033[1;31m InCorrect : " << round_score.incorrect << "\033[0m\n";
-    if (total_score > 0)
+    if (total_score >= 0)
     {
         cout << "\033[1;33m Total Score : " << total_score << " out of " << round_score.count * CORRECT_WEIGHT << "\033[0m\n\n";
     }
