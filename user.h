@@ -12,9 +12,9 @@ class User
         User();
         User(std::string _name, int _score);
         std::string serialize();
-        bool operator<(User &user2);
-        bool operator>(User &user2);
-        bool operator==(User user2);
+        bool operator<(const User &user2) const;
+        bool operator>(const User &user2) const;
+        bool operator==(const User user2) const;
 };
 
 class LeaderBoard

@@ -12,7 +12,7 @@
 using namespace std;
 
 const float CORRECT_WEIGHT = 1;
-const float INCORRECT_WEIGHT = 2;
+const float INCORRECT_WEIGHT = 0;
 float TIME_LIMIT = 10;
 
 Settings SETTINGS;
@@ -29,33 +29,35 @@ struct Score
 void show_gameover(Score round_score)
 {
     int total_score = (round_score.correct * CORRECT_WEIGHT) - (round_score.incorrect * INCORRECT_WEIGHT);
+    cout << "Game over!\n";
     if (round_score.correct >= round_score.count)
     {
-        cout << "Game over! You're \033[1;33mAWESOME\033[0m! \nYou answered all the questions correctly!";
-        cout << "\n\033[1;33m Total Score : " << total_score << " out of " << round_score.count * CORRECT_WEIGHT << "\033[0m\n\n";
-    }
-    else if (total_score > (round_score.count * CORRECT_WEIGHT / 4))
-    {
-        cout << "Game over! Impressive! \nMore than 75 percent of the answers were correct.";
-        cout << "\n\033[1;33m Total Score : " << total_score << " out of " << round_score.count * CORRECT_WEIGHT << "\033[0m\n\n";
-    }
-    else if (total_score > 0)
-    {
-        cout << "Game over! Could be better! \n";
-        cout << "\n\033[1;33m Total Score : " << total_score << " out of " << round_score.count * CORRECT_WEIGHT << "\033[0m\n\n";
+        cout << "\033[1;32mCONGRATULATIONS\033[0m! You answered all the questions correctly!\n";
     }
     else
     {
-        cout << "Game over! You're a \033[1;31mfailure\033[0m! \n";
-        cout << "\n\033[1;33m Total Score : Does not worth to mention\033[0m\n\n";
+        cout << "You have \033[1;31mlost\033[0m! Better luck next time!\n";
+    }
+    cout << "\033[1;32m Correct : " << round_score.correct << "\033[0m\n";
+    cout << "\033[1;31m InCorrect : " << round_score.incorrect << "\033[0m\n";
+    if (total_score >= 0)
+    {
+        cout << "\033[1;33m Total Score : " << total_score << " out of " << round_score.count * CORRECT_WEIGHT << "\033[0m\n\n";
+    }
+    else
+    {
+        cout << "\033[1;33m Total Score : below zero.\033[0m\n\n";
     }
     enter_to_continue();
 }
 
 Score start_round(std::list<Question> qlist, int question_count = 20)
 {
-    print_animated("\n\033[1;33mEach correct answer gives 1 points and each incorrect asnwer costs 2 points!\033[0m\n", 1.5);
-    print_animated("\033[1;33mYou will have 10 seconds to answer each question! \n\033[0m\n", 1.5);
+    print_animated("\n\033[1;33mEach correct answer gives 1 points and if you answer incorrectly, the game will end!\033[0m\n", 1.5);
+    if (SETTINGS.get("TIMEOUT_ENABLED"))
+    {
+        print_animated("\033[1;33mYou will have 10 seconds to answer each question! \n\033[0m\n", 1.5);
+    }
     enter_to_continue();
     int correct = 0;
     int incorrect = 0;
@@ -73,13 +75,14 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
             r = it->prompt(-1, SETTINGS.get("DEBUG_MODE")); // Ask the question to the user without time limit
         }
         answered++;
-        if (r) // Check if the asnwer is true, if so, increment the correct counter
+        if (r) // Check if the answer is true, if so, increment the correct counter
         {
             correct++;
         }
         else // if not, increment the incorrect counter
         {
             incorrect++;
+            break;
         }
         if (answered >= question_count) // Check if we reached the last question, if so, break the loop
         {
@@ -91,7 +94,7 @@ Score start_round(std::list<Question> qlist, int question_count = 20)
         qlist.pop_front(); // I don't know if cleaning the list is important here but here it is anyway
     }
     clear_screen();
-    struct Score round_score = {answered, correct, incorrect};
+    struct Score round_score = {question_count, correct, incorrect};
     show_gameover(round_score);
     int total_score = correct * CORRECT_WEIGHT - incorrect * INCORRECT_WEIGHT;
     CURRENT_USER->score += max(total_score, 0);

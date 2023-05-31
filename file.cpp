@@ -4,7 +4,7 @@
 #include <fstream>
 #include <list>
 #include <unordered_map>
-#include "Question.h"
+#include "question.h"
 #include "file.h"
 #include "user.h"
 
@@ -92,8 +92,14 @@ std::list<Question> randomize_question_list(std::list<Question> qlist)
 // When randomOrder is true, questions will be ordered randomly.
 std::list<Question> get_questions_from_file(std::string fileName, bool randomOrder)
 {
-    std::ifstream file (fileName, std::ifstream::in);
+    std::ifstream file;
+    file.open(fileName , std::fstream::in);
     std::list<Question> qlist;
+    if (!file.is_open())
+    {
+        std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + " ! Can not open the file!\"\n";
+        return qlist;
+    }
     while (!file.eof())
     {
         std::string line = "";
@@ -115,21 +121,23 @@ std::list<Question> get_questions_from_file(std::string fileName, bool randomOrd
         {
             if (file.eof())
             {
-                std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + "\"\n";
+                std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + "\" ! Reached EOF before reading the options.\n";
                 return qlist;
             }
-            std::getline(file, q.options[i]);
+            std::string option = "";
+            std::getline(file, option);
+            q.options[i] = option;
         }
         if (file.eof())
         {
-            std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + "\"\n";
+            std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" << fileName << "\" ! Reached EOF before reading the correct option.\n";
             return qlist;
         }
-        std::string copt;
+        std::string copt = "";
         std::getline(file, copt);
         if (file.eof() || (copt.length() < 1))
         {
-            std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + "\"\n";
+            std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + "\" ! Reached EOF before reading the description.\n";
             return qlist;
         }
         switch (copt[0])
@@ -147,10 +155,13 @@ std::list<Question> get_questions_from_file(std::string fileName, bool randomOrd
             q.correct_option = 3;
             break;
         default:
+            std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + "\" ! The correct option is corrupted.\n";
             q.correct_option = 2;
             break;
         }
-        std::getline(file, q.description);
+        std::string desc = "";
+        std::getline(file, desc);
+        q.description = desc;
         qlist.push_back(q);
     }
     file.close();

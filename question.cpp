@@ -100,15 +100,15 @@ bool Question::prompt(float timeout, bool debug_mode)
     return correct;
 }
 
-bool Question::operator<(Question other)
+bool Question::operator<(const Question other) const
 {
     return index < other.index;
 }
-bool Question::operator>(Question other)
+bool Question::operator>(const Question other) const
 {
     return index > other.index;
 }
-bool Question::operator==(Question other)
+bool Question::operator==(const Question other) const
 {
-    return (this->id == other.id);
+    return id == other.id;
 }

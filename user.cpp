@@ -20,17 +20,17 @@ std::string User::serialize()
     return name + "\n" + scoreStr + "\n";
 }
 
-bool User::operator<(User &user2)
+bool User::operator<(const User &user2) const
 {
     return (score < user2.score);
 }
-bool User::operator>(User &user2)
+bool User::operator>(const User &user2) const
 {
     return (score > user2.score);
 }
-bool User::operator==(User user2)
+bool User::operator==(const User user2) const
 {
-    return (this->name == user2.name);
+    return (name == user2.name);
 }
 
 LeaderBoard::LeaderBoard()
@@ -72,7 +72,7 @@ bool LeaderBoard::remove(User &user)
     }
     if (found)
     {
-        users.remove(user);
+        users.remove(*(&(user)));
     }
     return found;
 }
