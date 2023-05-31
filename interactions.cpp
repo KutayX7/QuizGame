@@ -8,7 +8,7 @@ typedef std::chrono::duration<int> seconds_type;
 bool isWaitingForInput = false;
 std::string cachedInput;
 
-std::chrono::time_point timeoutTime = std::chrono::high_resolution_clock().now();
+std::chrono::time_point<std::chrono::system_clock> timeoutTime;
 
 void userInputTimeout() // Not fully implemented yet
 {
@@ -42,7 +42,7 @@ std::string get_input_from_user_with_timeout(int seconds)
         while (isWaitingForInput)
         {
             std::cout.flush();
-            if (std::chrono::high_resolution_clock().now() > timeoutTime)
+            if (std::chrono::system_clock().now() > timeoutTime)
             {
                 userInputTimeout();
                 break;
@@ -59,7 +59,7 @@ std::string get_input_from_user_with_timeout(int seconds)
         cachedInput = "";
         std::thread inputThread (get_input_from_user);
         seconds_type Duration (seconds);
-        timeoutTime = std::chrono::high_resolution_clock().now() + Duration;
+        timeoutTime = std::chrono::system_clock().now() + Duration;
         inputThread.detach();
         while (!isWaitingForInput)
         {
@@ -68,7 +68,7 @@ std::string get_input_from_user_with_timeout(int seconds)
         while (isWaitingForInput)
         {
             std::cout.flush();
-            if (std::chrono::high_resolution_clock().now() > timeoutTime)
+            if (std::chrono::system_clock().now() > timeoutTime)
             {
                 userInputTimeout();
                 break;
