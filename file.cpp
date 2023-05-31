@@ -92,8 +92,14 @@ std::list<Question> randomize_question_list(std::list<Question> qlist)
 // When randomOrder is true, questions will be ordered randomly.
 std::list<Question> get_questions_from_file(std::string fileName, bool randomOrder)
 {
-    std::ifstream file (fileName, std::ifstream::in);
+    std::ifstream file;
+    file.open(fileName , std::fstream::in);
     std::list<Question> qlist;
+    if (!file.is_open())
+    {
+        std::cout << "\n\033[1;31m Error while reading questions from file\033[0m \"" + fileName + " ! Can not open the file!\"\n";
+        return qlist;
+    }
     while (!file.eof())
     {
         std::string line = "";
