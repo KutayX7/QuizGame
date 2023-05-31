@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <fstream>
 #include "textAnimator.h"
 #include "question.h"
 #include "interactions.h"

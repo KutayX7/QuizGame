@@ -1,7 +1,9 @@
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <thread>
 #include <time.h>
+#include <chrono>
 
 typedef std::chrono::duration<int> seconds_type;
 
