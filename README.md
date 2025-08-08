@@ -1,6 +1,13 @@
 # QuizGame
-For university project
+This was for an university C++ project.
+We got the best score of 99 out of 100 with this project.
 
+As there won't be any further changes, it has been archived.
+
+If you're interested in trying it out, use it with caution. This thing is neither well tested nor uses best practices so it might do weird things.
+
+It has been made to work on Windows, and probably won't work properly on linux.
+(This is mostly due to line endings and our unawareness at the time of making this project.)
 
 ## The Quiz Game.
 The Quiz Game is a console-based game designed to test the player’s knowledge of any concepts. The
